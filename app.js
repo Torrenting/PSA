@@ -26,7 +26,8 @@ app.get("/search", (req, res, next) => {
 
         res.status(400).json(responseJSON).send();
     } else {
-        if(req.query.website.toLowerCase() === "zenmarket" || req.query.website.toLowerCase() === "ebay") {
+        if(req.query.website.toLowerCase() === "zenmarket" || req.query.website.toLowerCase() === "ebay"
+            || req.query.website.toLowerCase() === "mercari") {
             WebsiteSearch.search(req.query.website.toLowerCase(), req.query.query).then(resultJSON => {
                 res.status(200).json(resultJSON);
             }).catch(err => {

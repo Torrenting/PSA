@@ -1,8 +1,8 @@
 let eBay = require("ebay-node-api");
-const rp = require('request-promise');
 const cheerio = require('cheerio');
 const request = require('request');
 const config = require('../config.json')
+const puppeteer = require('puppeteer');
 
 let ebay = new eBay({
     clientID: config["ebay-api-key"],
@@ -81,7 +81,50 @@ function search(website, param) {
             })
         })
 
+    } else if(website === "mercari") {
+        let base_url = "https://jp.mercari.com/search?keyword=" + param;
+        searchMercari(base_url).then(results => {
+            resolve({
+                "response_status": "success",
+                "results": results
+            })
+        }).catch(err => {
+            reject({
+                "response_status": "error",
+                "error": "error whilst parsing mercari",
+                "error_description": err
+            })
+        })
+
     }
+    })
+}
+
+async function searchMercari(url) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            await page.goto(url);
+            await page.waitForNetworkIdle()
+            let urls = await page.evaluate(() => {
+                let results = [];
+                let items = document.querySelectorAll('a.ItemGrid__StyledThumbnailLink-sc-14pfel3-2.dPGTBN');
+                items.forEach((item) => {
+                    if(item.getAttribute('href').indexOf("/item/") !== -1) {
+                        results.push({
+                            title: item.innerText,
+                            link: "https://jp.mercari.com" + item.getAttribute('href')
+                        });
+                    }
+                });
+                return results;
+            })
+            await browser.close();
+            return resolve(urls);
+        } catch (e) {
+            return reject(e);
+        }
     })
 }
 
