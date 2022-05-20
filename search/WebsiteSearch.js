@@ -1,10 +1,11 @@
 let eBay = require("ebay-node-api");
 const rp = require('request-promise');
 const cheerio = require('cheerio');
-const request = require('request')
+const request = require('request');
+const config = require('../config.json')
 
 let ebay = new eBay({
-    clientID: "-- Client APP ID ----",
+    clientID: config["ebay-api-key"],
     env: "SANDBOX", // optional default = 'PRODUCTION'
     headers: {
         // optional
@@ -32,8 +33,8 @@ function search(website, param) {
         }, (error) => {
             reject( {
                 "response_status": "error",
-                "error_description": "There was an error with your request",
-                "error_result": error
+                "error": "There was an error with your request",
+                "error_description": error
             })
         });
 
