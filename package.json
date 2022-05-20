@@ -1,0 +1,20 @@
+{
+  "name": "dev-api",
+  "version": "1.0.0",
+  "description": "REST API to search common sites for development consoles",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "PrimitiveData",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "ebay-node-api": "^2.9.0",
+    "express": "^4.18.1",
+    "puppeteer": "^14.1.1",
+    "python-shell": "^3.0.1",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.6"
+  }
+}
