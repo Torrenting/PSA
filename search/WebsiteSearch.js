@@ -185,7 +185,6 @@ function search(website, param) {
             }
             let $ = cheerio.load(body);
             let selector = $('h3.product-item-title > a')
-            console.log(selector.length)
             let amount = selector.length;
             for(let i = 0; i < amount; i++) {
                 if (selector[i].attribs.href.indexOf('/item/') !== -1) {
@@ -199,7 +198,8 @@ function search(website, param) {
             if(items.length === 0) {
                 reject({
                     "response_status":"error",
-                    "error": "No results found"
+                    "error": "No results found",
+                    "error_description": "No results found"
                 })
             } else {
                 resolve({
@@ -210,6 +210,7 @@ function search(website, param) {
         }).on('error', function (err) {
             reject({
                 "response_status":"error",
+                "error": "Error parsing request",
                 "error_description": err
             })
         })
@@ -240,7 +241,6 @@ async function searchMercariJP(url) {
             await browser.close();
             return resolve(urls);
         } catch (e) {
-            console.log(e)
             return reject(e);
         }
     })
@@ -270,7 +270,6 @@ async function searchMercariUS(url) {
             await browser.close();
             return resolve(urls);
         } catch (e) {
-            console.log(e)
             return reject(e);
         }
     })
