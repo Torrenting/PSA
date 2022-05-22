@@ -44,4 +44,6 @@ If the response_status is error, the response will have two additional fields:\
 
 If the response_status is success, the collection of results will be stored in the response `results`
 
-I will later update this file with how each result set should look for each website.
+Results will look the same for every website. Results returns a collection of items that each have the following:
+`title` - the name of the item (can be English or Japanese depending on the website you use)
+`link` - the link to the item
