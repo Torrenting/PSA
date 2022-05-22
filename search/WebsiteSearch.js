@@ -97,7 +97,7 @@ function search(website, param) {
         })
 
     } else if(website === "mercarius") {
-        let base_url = "https://mercari.com/search?keyword=" + param;
+        let base_url = "https://www.mercari.com/search?keyword=" + param;
         searchMercariUS(base_url).then(results => {
             resolve({
                 "response_status": "success",
