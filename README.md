@@ -9,8 +9,9 @@ PSA (Product Search API) is meant to simplify our searches through the most comm
 Currently supported websites are:
 - eBay (US) - `ebay`
 - Zenmarket (JP) - `zenmarket`
-- mercari (JP) - `mercariJP`
-- mercari (US) - `mercariUS`
+- Mercari (JP) - `mercariJP`
+- Mercari (US) - `mercariUS`
+- Yahoo Auctions (JP) - `yahoo`
 
 ### Endpoints
 
