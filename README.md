@@ -12,6 +12,7 @@ Currently supported websites are:
 - Mercari (JP) - `mercariJP`
 - Mercari (US) - `mercariUS`
 - Yahoo Auctions (JP) - `yahoo`
+- Sendico (JP) - `sendico`
 
 ### Endpoints
 
