@@ -1,43 +1,59 @@
-let eBay = require("ebay-node-api");
 const cheerio = require('cheerio');
 const request = require('request');
 const config = require('../config.json')
 const puppeteer = require('puppeteer');
+let eBay = require("ebay-node-api");
 
-let ebay = new eBay({
+const ebay = new eBay({
     clientID: config["ebay-api-key"],
-    env: "SANDBOX", // optional default = 'PRODUCTION'
-    headers: {
-        // optional
-        "X-EBAY-C-MARKETPLACE-ID": "EBAY_US"
+    clientSecret: config["ebay-api-secret"],
+    body: {
+        grant_type: "client_credentials",
+        scope: "https://api.ebay.com/oauth/api_scope"
     }
 });
 
 function search(website, param) {
     return new Promise((resolve, reject) => {
     if(website === "ebay") {
-        ebay.findItemsByKeywords({
-            keywords: param,
-            sortOrder: 'BestMatch', //https://developer.ebay.com/devzone/finding/callref/extra/fndcmpltditms.rqst.srtordr.html
-            Condition: 3000,
-            SoldItemsOnly: false,
-            affiliate: {
-                networkId: 9,
-                trackingId: 1234567890
-            }
-        }).then((data) => {
-            resolve( {
-                "response_status": "success",
-                "results": data
-            });
-        }, (error) => {
-            reject( {
-                "response_status": "error",
-                "error": "There was an error with your request",
-                "error_description": error
+        ebay
+            .findItemsByKeywords({
+                keywords: param,
+                sortOrder: "BestMatch", //https://developer.ebay.com/devzone/finding/callref/extra/fndcmpltditms.rqst.srtordr.html
+                pageNumber: 1,
+                limit: 10
             })
-        });
-
+            .then(
+                data => {
+                    let results = data[0]["searchResult"][0]["item"]
+                    if (results !== undefined && results.length > 0) {
+                        let items = []
+                        for (let i = 0; i < results.length; i++) {
+                            items.push({
+                                title: results[i]["title"][0],
+                                link: results[i]["viewItemURL"][0]
+                            })
+                        }
+                        resolve({
+                            "response_status": "success",
+                            "results": items
+                        })
+                    } else {
+                        reject({
+                            "response_status":"error",
+                            "error": "No results found",
+                            "error_description": "No results found"
+                        })
+                    }
+                },
+                error => {
+                    reject({
+                        "response_status":"error",
+                        "error": "An error has occurred",
+                        "error_description": error
+                    })
+                }
+            );
     } else if (website === "zenmarket") {
         param = encodeURIComponent(param)
         let base_url = 'https://zenmarket.jp/en/yahoo.aspx?q='
@@ -66,7 +82,8 @@ function search(website, param) {
             if(items.length === 0) {
                 reject({
                     "response_status":"error",
-                    "error": "No results found"
+                    "error": "No results found",
+                    "error_description": "No results found"
                 })
             } else {
                 resolve({
@@ -77,6 +94,7 @@ function search(website, param) {
         }).on('error', function (err) {
             reject({
                 "response_status":"error",
+                "error": "An error has occurred",
                 "error_description": err
             })
         })
