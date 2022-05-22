@@ -14,7 +14,7 @@ Currently supported websites are:
 - Yahoo Auctions (JP) - `yahoo`
 - Sendico (JP) - `sendico`
 
-* = requires setup in the config.json (see below)
+\* = requires setup in the config.json (see below)
 
 ### Config
 The config.json file serves two purposes:
