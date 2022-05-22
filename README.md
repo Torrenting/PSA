@@ -37,7 +37,7 @@ success - the query was successfully executed and returned
 
 error - there was an error in your request or whilst executing your request
 
-If the response_status is error, the response will have two additional fields:\
+If the response_status is error, the response will have two additional fields:
 
 `error` - The general name of the error (usually short and to the point)
 `error_description` - A description of the error in greater detail (will either be a more specific sentence or a stacktrace)
