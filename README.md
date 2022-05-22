@@ -7,22 +7,33 @@ PSA (Product Search API) is meant to simplify our searches through the most comm
 ### Websites
 
 Currently supported websites are:
-- eBay - `ebay`
+- eBay* - `ebay`
 - Zenmarket (JP) - `zenmarket`
 - Mercari (JP) - `mercariJP`
 - Mercari (US) - `mercariUS`
 - Yahoo Auctions (JP) - `yahoo`
 - Sendico (JP) - `sendico`
 
+* = requires setup in the config.json (see below)
+
+### Config
+The config.json file serves two purposes:
+  - Supplying the port for the server
+  - Supplying the eBay API and secret keys
+
+The port is required for the server to run and is set to `3737` by default
+
+The eBay API and secret keys are only required if you plan to use the eBay API. You can find those keys by signing up to the eBay developer program, and generating **PRODUCTION** keys (not sandbox, these will not return actual data).
+
 ### Endpoints
 
 ```
-<url>:3737/search?website={WEBSITE}&query={QUERY}
+<url>:{PORT}/search?website={WEBSITE}&query={QUERY}
 ```
 
 Parameters:
 
-`website` - Which website to search on (one word, case insensitive)
+`website` - Which website to search on (one word, case insensitive, see list of websites for allowed paraneters [use the word in the code block after the dash])
 
 `query` - Keywords to search on the given website (can be multiple words)
 
