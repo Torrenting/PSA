@@ -81,9 +81,24 @@ function search(website, param) {
             })
         })
 
-    } else if(website === "mercari") {
+    } else if(website === "mercarijp") {
         let base_url = "https://jp.mercari.com/search?keyword=" + param;
-        searchMercari(base_url).then(results => {
+        searchMercariJP(base_url).then(results => {
+            resolve({
+                "response_status": "success",
+                "results": results
+            })
+        }).catch(err => {
+            reject({
+                "response_status": "error",
+                "error": "error whilst parsing mercari",
+                "error_description": err
+            })
+        })
+
+    } else if(website === "mercarius") {
+        let base_url = "https://www.mercari.com/search?keyword=" + param;
+        searchMercariUS(base_url).then(results => {
             resolve({
                 "response_status": "success",
                 "results": results
@@ -100,7 +115,7 @@ function search(website, param) {
     })
 }
 
-async function searchMercari(url) {
+async function searchMercariJP(url) {
     return new Promise(async (resolve, reject) => {
         try {
             const browser = await puppeteer.launch();
@@ -109,7 +124,7 @@ async function searchMercari(url) {
             await page.waitForNetworkIdle()
             let urls = await page.evaluate(() => {
                 let results = [];
-                let items = document.querySelectorAll('a.ItemGrid__StyledThumbnailLink-sc-14pfel3-2.dPGTBN');
+                let items = document.querySelectorAll("a.ItemGrid__StyledThumbnailLink-sc-14pfel3-2.dPGTBN");
                 items.forEach((item) => {
                     if(item.getAttribute('href').indexOf("/item/") !== -1) {
                         results.push({
@@ -123,6 +138,37 @@ async function searchMercari(url) {
             await browser.close();
             return resolve(urls);
         } catch (e) {
+            console.log(e)
+            return reject(e);
+        }
+    })
+}
+
+async function searchMercariUS(url) {
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            const browser = await puppeteer.launch();
+            const page = await browser.newPage();
+            await page.goto(url);
+            await page.waitForNetworkIdle()
+            let urls = await page.evaluate(() => {
+                let results = [];
+                let items = document.querySelectorAll("a.Text__LinkText-sc-1e98qiv-0-a.Link__StyledAnchor-dkjuk2-0.fiIUU.Link__StyledPlainLink-dkjuk2-3.beSDvJ");
+                items.forEach((item) => {
+                    if(item.getAttribute('href').indexOf("/item/") !== -1) {
+                        results.push({
+                            title: item.innerText,
+                            link: "https://mercari.com" + item.getAttribute('href')
+                        });
+                    }
+                });
+                return results;
+            })
+            await browser.close();
+            return resolve(urls);
+        } catch (e) {
+            console.log(e)
             return reject(e);
         }
     })
