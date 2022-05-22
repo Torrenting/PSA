@@ -153,6 +153,48 @@ function search(website, param) {
                 "error_description": err
             })
         })
+    } else if(website === "sendico") {
+        param = encodeURIComponent(param)
+        let base_url = 'https://www.sendico.com/browse?category=&query='
+        let fullUrl = base_url + param
+        request({
+            method: 'GET',
+            url: fullUrl
+        }, (err, res, body) => {
+            let items = []
+            if(typeof body !== "string") {
+                body = body.toString()
+            }
+            let $ = cheerio.load(body);
+            let selector = $('h3.product-item-title > a')
+            console.log(selector.length)
+            let amount = selector.length;
+            for(let i = 0; i < amount; i++) {
+                if (selector[i].attribs.href.indexOf('/item/') !== -1) {
+                    let data = {
+                        "title": $(selector[i]).text(),
+                        "link": selector[i].attribs.href
+                    }
+                    items.push(data)
+                }
+            }
+            if(items.length === 0) {
+                reject({
+                    "response_status":"error",
+                    "error": "No results found"
+                })
+            } else {
+                resolve({
+                    "response_status": "success",
+                    "results": items
+                })
+            }
+        }).on('error', function (err) {
+            reject({
+                "response_status":"error",
+                "error_description": err
+            })
+        })
     }
     })
 }

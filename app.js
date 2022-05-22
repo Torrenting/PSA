@@ -28,7 +28,7 @@ app.get("/search", (req, res, next) => {
     } else {
         if(req.query.website.toLowerCase() === "zenmarket" || req.query.website.toLowerCase() === "ebay"
             || req.query.website.toLowerCase() === "mercarijp" || req.query.website.toLowerCase() === "mercarius"
-            || req.query.website.toLowerCase() === "yahoo") {
+            || req.query.website.toLowerCase() === "yahoo" || req.query.website.toLowerCase() === "sendico") {
             WebsiteSearch.search(req.query.website.toLowerCase(), req.query.query).then(resultJSON => {
                 res.status(200).json(resultJSON);
             }).catch(err => {
