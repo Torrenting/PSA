@@ -1,9 +1,9 @@
-var express = require("express");
-var app = express();
-var WebsiteSearch = require("./search/WebsiteSearch")
-const fs = require("fs");
+const express = require("express");
+const app = express();
+const WebsiteSearch = require("./search/WebsiteSearch")
+const config = require("./config.json")
 
-var port = 3737
+const port = config["port"];
 app.listen(port, () => {
     console.log("Server running on port " + port);
 });
