@@ -111,6 +111,48 @@ function search(website, param) {
             })
         })
 
+    } else if(website === "yahoo") {
+        param = encodeURIComponent(param)
+        let base_url = 'https://auctions.yahoo.co.jp/search/search?auccat=&tab_ex=commerce&ei=utf-8&aq=-1&oq=&sc_i=&fr=auc_top&p='
+        let sort = '&x=0&y=0'
+        let fullUrl = base_url + param + sort
+        request({
+            method: 'GET',
+            url: fullUrl
+        }, (err, res, body) => {
+            let items = []
+            if(typeof body !== "string") {
+                body = body.toString()
+            }
+            let $ = cheerio.load(body);
+            let selector = $('a.Product__imageLink.js-rapid-override.js-browseHistory-add')
+            let amount = selector.length;
+            for(let i = 0; i < amount; i++) {
+                if (selector[i].attribs.href.indexOf('/auction/') !== -1) {
+                    let data = {
+                        "title": selector[i].attribs["data-auction-title"],
+                        "link": selector[i].attribs.href
+                    }
+                    items.push(data)
+                }
+            }
+            if(items.length === 0) {
+                reject({
+                    "response_status":"error",
+                    "error": "No results found"
+                })
+            } else {
+                resolve({
+                    "response_status": "success",
+                    "results": items
+                })
+            }
+        }).on('error', function (err) {
+            reject({
+                "response_status":"error",
+                "error_description": err
+            })
+        })
     }
     })
 }
