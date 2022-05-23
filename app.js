@@ -2,8 +2,9 @@ const express = require("express");
 const app = express();
 const WebsiteSearch = require("./search/WebsiteSearch")
 const config = require("./config.json")
-
+const websites = ["zenmarket", "ebay", "mercarijp", "mercarius", "yahoo", "sendico"]
 const port = config["port"];
+
 app.listen(port, () => {
     console.log("Server running on port " + port);
 });
@@ -26,9 +27,7 @@ app.get("/search", (req, res, next) => {
 
         res.status(400).json(responseJSON).send();
     } else {
-        if(req.query.website.toLowerCase() === "zenmarket" || req.query.website.toLowerCase() === "ebay"
-            || req.query.website.toLowerCase() === "mercarijp" || req.query.website.toLowerCase() === "mercarius"
-            || req.query.website.toLowerCase() === "yahoo" || req.query.website.toLowerCase() === "sendico") {
+        if(websites.includes(req.query.website.toLowerCase())) {
             WebsiteSearch.search(req.query.website.toLowerCase(), req.query.query).then(resultJSON => {
                 res.status(200).json(resultJSON);
             }).catch(err => {
