@@ -25,13 +25,13 @@ app.get("/search", (req, res, next) => {
             "error_description": error
         }
 
-        res.status(400).json(responseJSON).send();
+        res.status(200).json(responseJSON).send();
     } else {
         if(websites.includes(req.query.website.toLowerCase())) {
             WebsiteSearch.search(req.query.website.toLowerCase(), req.query.query).then(resultJSON => {
                 res.status(200).json(resultJSON);
             }).catch(err => {
-                res.status(400).json(err);
+                res.status(200).json(err);
             })
 
         } else {
@@ -42,7 +42,7 @@ app.get("/search", (req, res, next) => {
                 "error_description": "Invalid website supplied"
             }
 
-            res.status(400).json(responseJSON).send();
+            res.status(200).json(responseJSON).send();
         }
 
     }
