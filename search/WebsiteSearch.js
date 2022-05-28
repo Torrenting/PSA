@@ -19,7 +19,7 @@ function search(website, param) {
         ebay
             .findItemsByKeywords({
                 keywords: param,
-                sortOrder: "BestMatch", //https://developer.ebay.com/devzone/finding/callref/extra/fndcmpltditms.rqst.srtordr.html
+                sortOrder: "BestMatch",
                 pageNumber: 1,
                 limit: 10
             })
@@ -107,6 +107,7 @@ function search(website, param) {
                 "results": results
             })
         }).catch(err => {
+            console.log(err)
             reject({
                 "response_status": "error",
                 "error": "error whilst parsing mercari",
@@ -221,7 +222,7 @@ function search(website, param) {
 async function searchMercariJP(url) {
     return new Promise(async (resolve, reject) => {
         try {
-            const browser = await puppeteer.launch();
+            const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
             const page = await browser.newPage();
             await page.goto(url);
             await page.waitForNetworkIdle()
