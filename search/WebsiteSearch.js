@@ -306,7 +306,7 @@ async function searchTaobao(url) {
                 let itemList = [];
                 let links = document.querySelectorAll("a.item-list_img-wrap");
                 links.forEach((link) => {
-                    linkList.push("https://item.taobao.com/item.htm?id=" + link.getAttribute("href"))
+                    linkList.push("https://item.taobao.com/item.htm?id=" + link.getAttribute("href").split("=")[1])
                 });
 
                 let names = document.querySelectorAll("img.check-noimg.main-photo");
