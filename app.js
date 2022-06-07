@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const WebsiteSearch = require("./search/WebsiteSearch")
 const config = require("./config.json")
-const websites = ["zenmarket", "ebay", "mercarijp", "mercarius", "yahoo", "sendico"]
+const websites = ["zenmarket", "ebay", "mercarijp", "mercarius", "yahoo", "sendico", "taobao"]
 const port = config["port"];
 
 app.listen(port, () => {

@@ -215,6 +215,21 @@ function search(website, param) {
                 "error_description": err
             })
         })
+    } else if(website === "taobao") {
+        let base_url = 'https://parcelup.com/shop/?p=search&search='
+        let fullUrl = base_url + encodeURIComponent(param)
+        searchTaobao(fullUrl).then(results => {
+            resolve({
+                "response_status": "success",
+                "results": results
+            })
+        }).catch(err => {
+            reject({
+                "response_status": "error",
+                "error": "error whilst parsing taobao",
+                "error_description": err
+            })
+        })
     }
     })
 }
@@ -266,6 +281,46 @@ async function searchMercariUS(url) {
                         });
                     }
                 });
+                return results;
+            })
+            await browser.close();
+            return resolve(urls);
+        } catch (e) {
+            return reject(e);
+        }
+    })
+}
+
+async function searchTaobao(url) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+            const page = await browser.newPage();
+            await page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36");
+            await page.goto(url);
+            await page.waitForNetworkIdle()
+            const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
+            let urls = await page.evaluate(() => {
+                let results = [];
+                let linkList = [];
+                let itemList = [];
+                let links = document.querySelectorAll("a.item-list_img-wrap");
+                links.forEach((link) => {
+                    linkList.push("https://item.taobao.com/item.htm?id=" + link.getAttribute("href"))
+                });
+
+                let names = document.querySelectorAll("img.check-noimg.main-photo");
+                names.forEach((item) => {
+                    itemList.push(item.getAttribute("alt"));
+                })
+
+                for(let i = 0; i < itemList.length; i++) {
+                    results.push({
+                        title: itemList[i],
+                        link: linkList[i]
+                    })
+                }
+
                 return results;
             })
             await browser.close();
