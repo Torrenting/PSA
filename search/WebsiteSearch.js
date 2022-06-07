@@ -217,7 +217,8 @@ function search(website, param) {
         })
     } else if(website === "taobao") {
         let base_url = 'https://parcelup.com/shop/?p=search&search='
-        let fullUrl = base_url + encodeURIComponent(param)
+        let sort = "&sort_by=UpdatedTime%3ADesc"
+        let fullUrl = base_url + encodeURIComponent(param) + sort
         searchTaobao(fullUrl).then(results => {
             resolve({
                 "response_status": "success",
@@ -299,7 +300,6 @@ async function searchTaobao(url) {
             await page.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36");
             await page.goto(url);
             await page.waitForNetworkIdle()
-            const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
             let urls = await page.evaluate(() => {
                 let results = [];
                 let linkList = [];
