@@ -13,6 +13,7 @@ Currently supported websites are:
 - Mercari (US) - `mercariUS`
 - Yahoo Auctions (JP) - `yahoo`
 - Sendico (JP) - `sendico`
+- Taobao (CN) - `taobao`
 
 \* = requires setup in the config.json (see below)
 
