@@ -3,57 +3,64 @@ const request = require('request');
 const config = require('../config.json')
 const puppeteer = require('puppeteer');
 let eBay = require("ebay-node-api");
-
-const ebay = new eBay({
-    clientID: config["ebay-api-key"],
-    clientSecret: config["ebay-api-secret"],
-    body: {
-        grant_type: "client_credentials",
-        scope: "https://api.ebay.com/oauth/api_scope"
-    }
-});
+let useEbay = config["ebay-api-key"].length > 1;
 
 function search(website, param) {
     return new Promise((resolve, reject) => {
     if(website === "ebay") {
-        ebay
-            .findItemsByKeywords({
-                keywords: param,
-                sortOrder: "BestMatch",
-                pageNumber: 1,
-                limit: 10
+        if(!useEbay) {
+            reject({
+                "response_status":"error",
+                "error":"ebay API not properly configured"
             })
-            .then(
-                data => {
-                    let results = data[0]["searchResult"][0]["item"]
-                    if (results !== undefined && results.length > 0) {
-                        let items = []
-                        for (let i = 0; i < results.length; i++) {
-                            items.push({
-                                title: results[i]["title"][0],
-                                link: results[i]["viewItemURL"][0]
+        } else {
+            const ebay = new eBay({
+                clientID: config["ebay-api-key"],
+                clientSecret: config["ebay-api-secret"],
+                body: {
+                    grant_type: "client_credentials",
+                    scope: "https://api.ebay.com/oauth/api_scope"
+                }
+            });
+            ebay
+                .findItemsByKeywords({
+                    keywords: param,
+                    sortOrder: "BestMatch",
+                    pageNumber: 1,
+                    limit: 10
+                })
+                .then(
+                    data => {
+                        let results = data[0]["searchResult"][0]["item"]
+                        if (results !== undefined && results.length > 0) {
+                            let items = []
+                            for (let i = 0; i < results.length; i++) {
+                                items.push({
+                                    title: results[i]["title"][0],
+                                    link: results[i]["viewItemURL"][0]
+                                })
+                            }
+                            resolve({
+                                "response_status": "success",
+                                "results": items
+                            })
+                        } else {
+                            reject({
+                                "response_status": "error",
+                                "error": "No results found",
+                                "error_description": "No results found"
                             })
                         }
-                        resolve({
-                            "response_status": "success",
-                            "results": items
-                        })
-                    } else {
+                    },
+                    error => {
                         reject({
-                            "response_status":"error",
-                            "error": "No results found",
-                            "error_description": "No results found"
+                            "response_status": "error",
+                            "error": "An error has occurred",
+                            "error_description": error
                         })
                     }
-                },
-                error => {
-                    reject({
-                        "response_status":"error",
-                        "error": "An error has occurred",
-                        "error_description": error
-                    })
-                }
-            );
+                );
+        }
     } else if (website === "zenmarket") {
         param = encodeURIComponent(param)
         let base_url = 'https://zenmarket.jp/en/yahoo.aspx?q='
