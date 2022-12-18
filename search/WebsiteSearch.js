@@ -280,7 +280,7 @@ async function searchMercariUS(url) {
             await page.waitForNetworkIdle()
             let urls = await page.evaluate(() => {
                 let results = [];
-                let items = document.querySelectorAll("a.Text__LinkText-sc-1e98qiv-0-a.Link__StyledAnchor-dkjuk2-0.fiIUU.Link__StyledPlainLink-dkjuk2-3.beSDvJ");
+                let items = document.querySelectorAll("a.Text__LinkText-sc-441b8d37-0-a.Link__StyledAnchor-sc-c96f6437-0.Link__StyledPlainLink-sc-c96f6437-3.eSSYiT.eqUXag");
                 items.forEach((item) => {
                     if(item.getAttribute('href').indexOf("/item/") !== -1) {
                         results.push({
