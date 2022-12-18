@@ -32,7 +32,7 @@ The eBay API and secret keys are only required if you plan to use the eBay API. 
 <url>:{PORT}/search?website={WEBSITE}&query={QUERY}
 ```
 
-## Parameters:
+## Parameters
 
 `website` - Which website to search on (one word, case insensitive, see list of websites for allowed parameters [use the word in the code block after the dash])
 
